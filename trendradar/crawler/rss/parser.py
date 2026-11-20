@@ -9,7 +9,7 @@ import re
 import html
 import json
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional, Dict, Any
 from email.utils import parsedate_to_datetime
 
@@ -280,7 +280,8 @@ class RSSParser:
 
         if date_struct:
             try:
-                dt = datetime(*date_struct[:6])
+                # feedparser's parsed time tuples are normalized to UTC.
+                dt = datetime(*date_struct[:6], tzinfo=timezone.utc)
                 return dt.isoformat()
             except (ValueError, TypeError):
                 pass
